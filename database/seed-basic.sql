@@ -17,3 +17,23 @@ SELECT 'JAVA-101-2026-01', 'Java Programming January 2026', id,
 FROM courses
 WHERE code = 'JAVA-101'
 ON CONFLICT (code) DO NOTHING;
+
+INSERT INTO students (
+    student_number,
+    first_name,
+    last_name,
+    nic,
+    email,
+    address,
+    date_of_birth
+)
+SELECT
+    'AB-SYN-' || LPAD(student_index::TEXT, 4, '0'),
+    'Synthetic Student ' || LPAD(student_index::TEXT, 4, '0'),
+    'Demo Family ' || LPAD(((student_index - 1) % 20 + 1)::TEXT, 2, '0'),
+    'SYN-NIC-' || LPAD(student_index::TEXT, 4, '0'),
+    'student' || LPAD(student_index::TEXT, 4, '0') || '@example.test',
+    'Synthetic Demo Address ' || LPAD(student_index::TEXT, 4, '0'),
+    DATE '1985-01-01' + ((student_index * 37) % 7300)
+FROM generate_series(1, 400) AS series(student_index)
+ON CONFLICT DO NOTHING;
